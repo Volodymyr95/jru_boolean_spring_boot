@@ -1,8 +1,10 @@
 package com.codegym.app.web.rest;
 
+import com.codegym.app.model.dto.UpdateUserDto;
 import com.codegym.app.model.dto.UserDto;
 import com.codegym.app.model.entity.User;
 import com.codegym.app.service.UserService;
+import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
@@ -13,6 +15,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/users/")
 @RequiredArgsConstructor
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -23,6 +26,10 @@ public class UserController {
         return userService.createUser(user);
     }
 
+    @GetMapping
+    public List<UserDto> getAllUsers() {
+        return userService.getAllUsers();
+    }
 
     @GetMapping(value = "/user")
     public List<User> getAllByFirstName(@RequestParam(required = false) String firstName,
@@ -45,9 +52,19 @@ public class UserController {
         return userService.update(user);
     }
 
+    @PatchMapping("/user/{userId}")
+    public void partialUpdate(@PathVariable Long userId, @RequestBody @Validated UpdateUserDto userDto) {
+        userService.partialUpdate(userId, userDto);
+    }
+
     @GetMapping(value = "/user/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getById(id);
+    }
+
+    @PatchMapping(value = "/user/{id}/email/{email}")
+    public void changeUserEmail(@PathVariable Long id, @PathVariable @Email(message = "Invalid email format") String email) {
+        userService.changeUserEmail(id, email);
     }
 
 
