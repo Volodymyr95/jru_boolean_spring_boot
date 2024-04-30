@@ -1,5 +1,6 @@
 package com.codegym.app.service;
 
+import com.codegym.app.exception.UserNotFoundException;
 import com.codegym.app.model.dto.UpdateUserDto;
 import com.codegym.app.model.dto.UserDto;
 import com.codegym.app.model.entity.User;
@@ -50,17 +51,17 @@ public class UserService {
         return userRepository.findAllByAgeGreaterThanEqual(18);
     }
 
-    public User getById(Long id) {
-        return userRepository.getMyUserById(id);
+    public UserDto getById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new UserNotFoundException(String.format("User with %d not found", id)));
+        return modelMapper.map(user, UserDto.class);
     }
 
     public void delete(Long id) {
         userRepository.deleteById(id);
-
     }
 
     public void partialUpdate(Long userId, UpdateUserDto userDto) {
-        User user = userRepository.getMyUserById(userId);
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundException(String.format("User with %d not found", userId)));
         userMapper.mapUserFromUserDto(userDto, user);
         userRepository.save(user);
     }

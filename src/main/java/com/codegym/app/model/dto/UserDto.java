@@ -3,11 +3,11 @@ package com.codegym.app.model.dto;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Size;
-import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
-@Builder
+@NoArgsConstructor
 public class UserDto {
     private Long id;
     @Size(min = 3, message = "Cannot be less that 3")
